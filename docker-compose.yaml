@@ -1,0 +1,39 @@
+version: '3.9'
+services:
+  sport-backend:
+    image: sport
+    container_name: sport
+    networks:
+      - backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: sleep infinity
+    env_file: .env
+    volumes:
+      - .:/app
+      - vscode-go-dev:/go/bin
+    ports:
+      - "8080:8080"
+
+  db:
+    image: postgres:13
+    restart: always
+    networks:
+      - backend
+    environment:
+      POSTGRES_DB: sport
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+      PGDATA: /var/lib/postgresql/data/
+    ports:
+      - '5432:5432'
+    volumes:
+      - db-data:/var/lib/postgresql/data/
+
+volumes:
+  vscode-go-dev:
+  db-data:
+
+networks:
+  backend:
